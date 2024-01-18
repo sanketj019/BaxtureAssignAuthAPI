@@ -51,25 +51,18 @@ namespace BaxtureAssignAuthAPI.Controllers
 
         // GET: api/Users
         [Authorize(Policy = "AdminOnly")]
-        [HttpGet]
+        [HttpGet("GetUsers")]
         public async Task<object> GetUser()
         {
-
             IEnumerable<User> users = await _userRepository.GetUsers();
             return Ok(users);
-
-
         }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(string id)
         {
-
-            if (!Guid.TryParse(id, out _))
-            {
-                return BadRequest("Invalid userId format");
-            }
+            // Check if user already exists
             User user = await _userRepository.GetUserById(id);
             if (user == null)
                 return NotFound($"User with ID {id} not found");
@@ -83,11 +76,6 @@ namespace BaxtureAssignAuthAPI.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> PutUser(string userId, User updateUser)
         {
-
-            if (!Guid.TryParse(userId, out _))
-            {
-                return BadRequest("Invalid userId format");
-            }
 
             var loggedInUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -113,7 +101,7 @@ namespace BaxtureAssignAuthAPI.Controllers
         }
 
         // POST: api/Users
-        [HttpPost]
+        [HttpPost("CreateUser")]
         [Authorize(Policy = "AdminOnly")]
         public async Task<ActionResult<User>> PostUser([FromBody] User user)
         {
@@ -134,10 +122,6 @@ namespace BaxtureAssignAuthAPI.Controllers
 
             // Return the created user with a status code 201
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
-
-
-
-
         }
 
         // DELETE: api/Users/5
@@ -145,10 +129,6 @@ namespace BaxtureAssignAuthAPI.Controllers
         [Authorize(Policy = "AdminOnly")]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            if (!Guid.TryParse(userId, out _))
-            {
-                return BadRequest("Invalid userId format");
-            }
 
             var userToDelete = await _userRepository.GetUserById(userId);
 
@@ -167,7 +147,7 @@ namespace BaxtureAssignAuthAPI.Controllers
         }
 
         [Authorize(Policy = "AdminOnly")]
-        [HttpPost("search")]
+        [HttpPost("SearchUser")]
         public async Task<IActionResult> SearchUsers([FromBody] UserSearchRequest searchRequest)
         {
             // Validate searchRequest and apply filters, pagination, and sorting
@@ -180,7 +160,7 @@ namespace BaxtureAssignAuthAPI.Controllers
 
 
         [Authorize(Policy = "AdminOnly")]
-        [HttpPost("export")]
+        [HttpPost("ExportUsers")]
         public async Task<IActionResult> ExportUsers([FromBody] UserSearchRequest searchRequest)
         {
             var filteredUsers = await _userRepository.SearchUsersAsync(searchRequest);

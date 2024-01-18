@@ -21,7 +21,7 @@ builder.Services.AddDbContext<UserDbContext>(options => options.UseSqlServer(bui
 builder.Services.AddScoped<IJWTServiceRepository, JWTServiceRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-//JWT Auth
+//JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -39,10 +39,14 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false
     };
 });
+
+// Policy for Admin role authorization
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
 });
+
+// Handled license issue
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 
@@ -55,7 +59,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Added custom exception handler
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
