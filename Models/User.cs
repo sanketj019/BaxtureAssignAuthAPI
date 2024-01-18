@@ -10,7 +10,7 @@ namespace BaxtureAssignAuthAPI.Models
             IsAdmin = false; // Default value for isAdmin
             Hobbies = new List<Hobby>(); // Initializing the hobbies list
         }
-
+        [Key]
         public string Id { get; set; }
 
         [Required]

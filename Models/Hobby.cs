@@ -8,6 +8,5 @@ namespace BaxtureAssignAuthAPI.Models
         [Required]
         public string Name { get; set; }
 
-        public List<User> Users { get; set; }
     }
 }

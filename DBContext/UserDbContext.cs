@@ -11,5 +11,8 @@ namespace BaxtureAssignAuthAPI.DBContext
         }
 
         public virtual DbSet<User> User { get; set; } = null!;
+
+       
+
     }
 }
